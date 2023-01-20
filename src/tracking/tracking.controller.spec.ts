@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { DateTime } from 'luxon';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TrackingController } from './tracking.controller';
 import { TrackingService } from './tracking.service';
@@ -19,7 +20,7 @@ describe('Tracking', () => {
               const schema = TrackingSchema;
 
               schema.pre('save', function (next) {
-                this.updatedAt = Date.now();
+                this.updatedAt = DateTime.now().toJSDate();
                 next();
               });
 

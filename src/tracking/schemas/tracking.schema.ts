@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -15,7 +16,7 @@ export class Tracking {
 
   @Prop({
     type: [Number],
-    default: [1, 2],
+    default: [],
   })
   searchChannels: number[];
 
@@ -27,14 +28,14 @@ export class Tracking {
   status: number;
 
   @Prop({
-    default: Date.now,
+    default: DateTime.now().toJSDate(),
   })
-  createdAt: number;
+  createdAt: Date;
 
   @Prop({
-    default: Date.now,
+    default: DateTime.now().toJSDate(),
   })
-  updatedAt: number;
+  updatedAt: Date;
 }
 
 export const TrackingSchema = SchemaFactory.createForClass(Tracking);
