@@ -1,12 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Tracking, TrackingDocument } from './schemas/tracking.schema';
 import { TrackingDto } from './dto/tracking.dto';
-import { Tracking } from './interfaces/tracking.interface';
 
 @Injectable()
 export class TrackingService {
   constructor(
-    @Inject('TRACKING_MODEL') private readonly trackingModel: Model<Tracking>,
+    @InjectModel(Tracking.name)
+    private readonly trackingModel: Model<TrackingDocument>,
   ) {}
 
   async create(createTrackingDto: TrackingDto): Promise<Tracking> {
@@ -16,10 +18,16 @@ export class TrackingService {
 
   async findAll(
     query: object,
+    sort: number,
     skip: number,
     limit: number,
   ): Promise<Tracking[]> {
-    return this.trackingModel.find(query).skip(skip).limit(limit).exec();
+    return this.trackingModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: sort > 0 ? 1 : -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<Tracking> {

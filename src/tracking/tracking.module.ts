@@ -1,12 +1,28 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { TrackingController } from './tracking.controller';
 import { TrackingService } from './tracking.service';
-import { trackingProviders } from './tracking.providers';
-import { DatabaseModule } from '../database/database.module';
+import { Tracking, TrackingSchema } from './schemas/tracking.schema';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    MongooseModule.forFeatureAsync([
+      {
+        name: Tracking.name,
+        useFactory: () => {
+          const schema = TrackingSchema;
+
+          schema.pre('save', function (next) {
+            this.updatedAt = Date.now();
+            next();
+          });
+
+          return schema;
+        },
+      },
+    ]),
+  ],
   controllers: [TrackingController],
-  providers: [TrackingService, ...trackingProviders],
+  providers: [TrackingService],
 })
 export class TrackingModule {}

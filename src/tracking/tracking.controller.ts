@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { TrackingDto, ListAllEntities } from './dto';
 import { TrackingService } from './tracking.service';
-import { Tracking } from './interfaces/tracking.interface';
+import { Tracking } from './schemas/tracking.schema';
 
 @Controller('tracking')
 export class TrackingController {
@@ -23,25 +23,18 @@ export class TrackingController {
 
   @Get()
   async findAll(@Query() params: ListAllEntities): Promise<Tracking[]> {
-    const { keyword, searchChannels, status, page, limit } = params;
-
     const query = {};
 
-    if (keyword) {
-      query['keyword'] = keyword;
+    if (params.status) {
+      query['status'] = params.status;
     }
 
-    if (searchChannels) {
-      query['searchChannels'] = searchChannels;
-    }
-
-    if (status) {
-      query['status'] = status;
-    }
-
-    const skip = (page - 1) * limit;
-
-    return this.trackingService.findAll(query, skip, limit);
+    return this.trackingService.findAll(
+      query,
+      params.sort || 1,
+      params.skip || 0,
+      params.limit || 100,
+    );
   }
 
   @Get(':id')

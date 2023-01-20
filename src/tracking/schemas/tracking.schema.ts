@@ -1,29 +1,40 @@
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
-export const TrackingSchema = new mongoose.Schema({
-  keyword: String,
-  searchChannels: {
+export type TrackingDocument = HydratedDocument<Tracking>;
+
+@Schema()
+export class Tracking {
+  _id: string;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  keyword: string;
+
+  @Prop({
     type: [Number],
     default: [1, 2],
-  },
-  status: {
-    type: Number,
-    default: 0,
-    enum: [0, 1, 2],
-  },
+  })
+  searchChannels: number[];
 
-  createdAt: {
+  @Prop({
     type: Number,
+    default: 1,
+    enum: [1, 2, 3],
+  })
+  status: number;
+
+  @Prop({
     default: Date.now,
-  },
-  updatedAt: {
-    type: Number,
+  })
+  createdAt: number;
+
+  @Prop({
     default: Date.now,
-  },
-});
+  })
+  updatedAt: number;
+}
 
-TrackingSchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-
-  next();
-});
+export const TrackingSchema = SchemaFactory.createForClass(Tracking);
