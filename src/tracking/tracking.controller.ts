@@ -31,7 +31,7 @@ export class TrackingController {
 
     return this.trackingService.findAll(
       query,
-      params.sort || 1,
+      params.sort > 0 ? 1 : -1,
       params.skip || 0,
       params.limit || 100,
     );

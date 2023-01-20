@@ -26,7 +26,7 @@ export class TrackingService {
       .find(query)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: sort > 0 ? 1 : -1 })
+      .sort({ createdAt: sort })
       .exec();
   }
 
